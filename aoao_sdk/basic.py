@@ -42,10 +42,55 @@ class AoaoBasic(AoaoBase, RequestsClient):
             'city_code': city_code,
         }
         if org_order_pushed_at:
-            body.update(org_order_pushed_at)
+            body['org_order_pushed_at'] = org_order_pushed_at
 
         if shipping_date:
-            body.update(shipping_date)
+            body['shipping_date'] = shipping_date
+
+        if shipping_time:
+            body['shipping_time'] = shipping_time
+
+        if goods:
+            body['goods'] = goods
+
+        if total_weight:
+            body['total_weight'] = total_weight
+
+        if total_volume:
+            body['total_volume'] = total_volume
+
+        if barcode:
+            body['barcode'] = barcode
+
+        if preserve_mode:
+            body['preserve_mode'] = preserve_mode
+
+        if note:
+            body['note'] = note
+
+        if pickup_code:
+            body['pickup_code'] = pickup_code
+
+        if recv_code:
+            body['recv_code'] = recv_code
+
+        if order_amonut:
+            body['order_amonut'] = order_amonut
+
+        if cod_amonut:
+            body['cod_amonut'] = cod_amonut
+
+        if pay_amount:
+            body['pay_amount'] = pay_amount
+
+        if extra_metas:
+            body['extra_metas'] = extra_metas
+
+        if address_id:
+            body['address_id'] = address_id
+
+        if consignor:
+            body['consignor'] = consignor
 
         data = self.get_aoao_object(cmd, **body)
         r = self.request(data)
