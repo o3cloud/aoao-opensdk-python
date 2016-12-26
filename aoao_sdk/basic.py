@@ -34,8 +34,43 @@ class AoaoBasic(AoaoBase, RequestsClient):
             'city_code',
         ]
         check_result = self.check_dictvalue(need_params_create, **kwargs)
-        if check_result is not True:
+        if not check_result:
             return check_result
         data = self.get_aoao_object(cmd, **kwargs)
+        r = self.request(data)
+        return r
+
+    def find(self, org_id, org_order_ids=None, start_date=None, end_date=None, page=None, limit=None, detail_mode=None):
+        """订单查询接口
+
+        商家可通过此接口查询单笔或多笔订单信息
+
+        :param org_id: 商家ID
+        :param org_order_ids: 商家订单ID
+        :param start_date: 开始日期, 格式：yyyymmdd, 例: 20161201
+        :param end_date: 结束日期, 格式：yyyymmdd
+        :param page: 当前页
+        :param limit: 每页条数, 不大于30
+        :param detail_mode: 1:只返回订单基础信息和物流信息，2:返回订单全部信息
+        :return:
+        """
+        cmd = 'aoao.o2o.order.find'
+        body = {
+            'org_id': org_id,
+        }
+        if org_order_ids:
+            body['org_order_ids'] = org_order_ids
+        if start_date:
+            body['start_date'] = start_date
+        if end_date:
+            body['end_date'] = end_date
+        if page:
+            body['page'] = page
+        if limit:
+            body['limit'] = limit
+        if detail_mode:
+            body['detail_mode'] = detail_mode
+
+        data = self.get_aoao_object(cmd, **body)
         r = self.request(data)
         return r

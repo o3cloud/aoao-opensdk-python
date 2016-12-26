@@ -16,7 +16,6 @@ class AoaoBase(object):
     def __init__(self, access_key=None, secret_key=None):
         self.access_key = access_key
         self.secret_key = secret_key
-        pass
 
     def get_aoao_object(self, cmd, **kwargs):
         """转换为嗷嗷协议
