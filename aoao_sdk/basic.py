@@ -40,6 +40,11 @@ class AoaoBasic(AoaoBase, RequestsClient):
             'pay_type': pay_type,
             'city_code': city_code,
         }
+        if org_order_pushed_at:
+            body.update(org_order_pushed_at)
+
+        if shipping_date:
+            body.update(shipping_date)
 
         data = self.get_aoao_object(cmd, **body)
         r = self.request(data)
