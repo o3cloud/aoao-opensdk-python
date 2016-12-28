@@ -8,9 +8,10 @@ class AoaoBasic(AoaoBase, RequestsClient):
 
     :param access_key: 公钥（ 由嗷嗷对接人员提供 )，用于数据传输，及身份验证
     :param secret_key: 私钥（ 由嗷嗷对接人员提供 )，用于计算签名
+    :param org_id: 商家ID（可在嗷嗷PC端获取）
     """
 
-    def __init__(self, access_key=None, secret_key=None, org_id=None):
+    def __init__(self, access_key, secret_key, org_id):
         """
 
         :param access_key:
@@ -24,7 +25,7 @@ class AoaoBasic(AoaoBase, RequestsClient):
                shipping_time=None, goods=None, total_weight=None, total_volume=None, barcode=None, preserve_mode=None,
                note=None, pickup_code=None, recv_code=None, order_amonut=None, cod_amonut=None, pay_amount=None,
                extra_metas=None, address_id=None, consignor=None):
-        """嗷嗷下单接口
+        """下单
 
         商户可通过此接口向嗷嗷平台推送订单，平台接收到请求后会立即告知订单是否接收成功，然后会通过推送接口告知订单的实时状态
 
@@ -120,40 +121,38 @@ class AoaoBasic(AoaoBase, RequestsClient):
         r = self.request(data)
         return r
 
-    def close(self, org_order_id=None, order_id=None, close_note=None):
-        """订单取消接口sdk
+    def close(self, close_note, org_order_id=None, order_id=None):
+        """订单取消
 
         说明：
             1. 商家可通过此接口取消嗷嗷平台订单;
             2. 订单只有在已创建、已确认、异常的状态下取消，其它状态不允许取消。
 
+        :param close_note: 取消原因
         :param org_order_id: 商家订单ID
         :param order_id: 平台订单ID
-        :param close_note: 取消原因
         :return:
         """
         cmd = 'aoao.o2o.order.close'
         body = {
             'org_id': self.org_id,
+            'close_note': close_note,
         }
         if org_order_id:
             body['org_order_id'] = org_order_id
         if order_id:
             body['order_id'] = order_id
-        if close_note:
-            body['close_note'] = close_note
 
         data = self.get_aoao_object(cmd, **body)
         r = self.request(data)
         return r
 
-    def find(self, org_id, org_order_ids=None, start_date=None, end_date=None, page=None, limit=None, detail_mode=None):
-        """订单查询接口
+    def find(self, org_order_ids=None, start_date=None, end_date=None, page=None, limit=None, detail_mode=None):
+        """订单查询
 
         商家可通过此接口查询单笔或多笔订单信息
 
-        :param org_id: 商家ID
-        :param org_order_ids: 商家订单ID
+        :param org_order_ids: 商家订单ID,可查询多笔，格式:[‘123’,‘456’]
         :param start_date: 开始日期, 格式：yyyymmdd, 例: 20161201
         :param end_date: 结束日期, 格式：yyyymmdd
         :param page: 当前页
@@ -163,7 +162,7 @@ class AoaoBasic(AoaoBase, RequestsClient):
         """
         cmd = 'aoao.o2o.order.find'
         body = {
-            'org_id': org_id,
+            'org_id': self.org_id,
         }
         if org_order_ids:
             body['org_order_ids'] = org_order_ids
