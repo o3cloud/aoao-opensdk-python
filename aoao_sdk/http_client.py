@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 import requests
-from . import aoao_url
+from .aoao_url import aoao_url
 
 
 class RequestsClient(object):
@@ -8,10 +8,11 @@ class RequestsClient(object):
     @staticmethod
     def request(data, method='post', url=aoao_url):
         headers = {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "application/json"
         }
         try:
             r = requests.request(method, url, data=data, headers=headers)
-        except requests.ConnectionError:
+        except requests.ConnectionError, e:
+            print e
             return
         return r

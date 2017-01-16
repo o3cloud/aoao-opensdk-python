@@ -23,8 +23,8 @@ class AoaoBasic(AoaoBase, RequestsClient):
 
     def create(self, org_order_id, contract_id, pay_type, city_code, org_order_pushed_at=None, shipping_date=None,
                shipping_time=None, goods=None, total_weight=None, total_volume=None, barcode=None, preserve_mode=None,
-               note=None, pickup_code=None, recv_code=None, order_amonut=None, cod_amonut=None, pay_amount=None,
-               extra_metas=None, address_id=None, consignor=None):
+               note=None, pickup_code=None, recv_code=None, order_amount=None, cod_amonut=None, pay_amount=None,
+               extra_metas=None, address_id=None, consignor=None, consignee=None):
         """下单
 
         商户可通过此接口向嗷嗷平台推送订单，平台接收到请求后会立即告知订单是否接收成功，然后会通过推送接口告知订单的实时状态
@@ -48,7 +48,7 @@ class AoaoBasic(AoaoBase, RequestsClient):
         :param note: 备注
         :param pickup_code: 提货码，由商家提供，骑士取货时出示
         :param recv_code: 签收码，由商家提供，顾客签收时出示
-        :param order_amonut: 订单总金额，单位：分
+        :param order_amount: 订单总金额，单位：分
         :param cod_amonut: 代收款，单位：分，骑士代商家向顾客收取
         :param pay_amount: 代付款，单位：分，骑士代商家向供货方垫付货款
         :param extra_metas: 附加信息（扩展字段，暂不使用）
@@ -99,8 +99,8 @@ class AoaoBasic(AoaoBase, RequestsClient):
         if recv_code:
             body['recv_code'] = recv_code
 
-        if order_amonut:
-            body['order_amonut'] = order_amonut
+        if order_amount:
+            body['order_amount'] = order_amount
 
         if cod_amonut:
             body['cod_amonut'] = cod_amonut
@@ -117,18 +117,21 @@ class AoaoBasic(AoaoBase, RequestsClient):
         if consignor:
             body['consignor'] = consignor
 
+        if consignee:
+            body['consignee'] = consignee
+
         data = self.get_aoao_object(cmd, **body)
         r = self.request(data)
         return r
 
-    def close(self, close_note, org_order_id=None, order_id=None):
+    def close(self, closed_note, org_order_id=None, order_id=None):
         """订单取消
 
         说明：
             1. 商家可通过此接口取消嗷嗷平台订单;
             2. 订单只有在已创建、已确认、异常的状态下取消，其它状态不允许取消。
 
-        :param close_note: 取消原因
+        :param closed_note: 取消原因
         :param org_order_id: 商家订单ID
         :param order_id: 平台订单ID
         :return:
@@ -136,7 +139,7 @@ class AoaoBasic(AoaoBase, RequestsClient):
         cmd = 'aoao.o2o.order.close'
         body = {
             'org_id': self.org_id,
-            'close_note': close_note,
+            'closed_note': closed_note,
         }
         if org_order_id:
             body['org_order_id'] = org_order_id

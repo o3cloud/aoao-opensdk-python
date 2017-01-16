@@ -4,7 +4,7 @@ import uuid
 import time
 import hmac
 import hashlib
-from . import version
+from .version import version
 
 
 class AoaoBase(object):
@@ -29,11 +29,10 @@ class AoaoBase(object):
             'body': kwargs,
             'cmd': cmd,
             'ticket': str(uuid.uuid1()).upper(),
-            'version': version.version,
+            'version': version,
             'time': int(time.time()),
         }
-        json_data = json.dumps(types, ensure_ascii=True, default=str, separators=(',', ':'),
-                               sort_keys=True)
+        json_data = json.dumps(types, ensure_ascii=True, default=str, separators=(',', ':'), sort_keys=True)
         result = hmac.new(self.secret_key, json_data, hashlib.md5).hexdigest()
         types['sign'] = result
         return json.dumps(types)
